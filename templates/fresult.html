@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Universities By Filter
+{% endblock %}
+
+{% block main %}
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>University Name</th>
+                    <th>State</th>
+                    <th>City</th>
+                    <th>Acceptance Rate</th>
+                    <th>In State Tuition</th>
+                    <th>Out Of State Tuition</th>
+                    <th>Programs</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if schools %}
+                    {% for school in schools %}
+                        <tr>
+                            <td> {{ school['name'] }} </td>
+                            <td> {{ school['state'] }} </td>
+                            <td> {{ school['city'] }} </td>
+                            <td> {{ school['acceptance_rate'] | percentage }} </td>
+                            <td> {{ school['in_state_tuition'] | usd  }} </td>
+                            <td> {{ school['out_of_state_tuition'] | usd  }} </td>
+                            <td>
+                                {% for title in school['titles'] %}
+                                    {{ title.title() }}<br>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <p>No schools found matching your criteria.</p>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

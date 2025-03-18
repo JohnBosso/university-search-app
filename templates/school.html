@@ -1,0 +1,155 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Info On University
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid mb-3">
+        <h2>University Information Cards</h2>
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="card">
+                            <p>School Name</p>
+                            <p><b>{{sch_names}}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>State Of School</p>
+                            <p><b>{{states}}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>City Of School</p>
+                            <p><b>{{cities}}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>Website</p>
+                            <p><b>{{sites}}</b></p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="card">
+                            <p>Acceptance Rate</p>
+                            <p><b>{{accepts | percentage }}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>Number Of Tests To Have</p>
+                            <p><b>{{tests}}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>Cost Of Books</p>
+                            <p><b>{{books | usd }}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>Pell Grant Rate</p>
+                            <p><b>{{grants | percentage }}</b></p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="card">
+                            <p>In state Tuition</p>
+                            <p><b>{{fees['in_state'] | usd }}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>Out Of State Tuition</p>
+                            <p><b>{{fees['out_of_state'] | usd }}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>On Campus Housing</p>
+                            <p><b>{{rooms['oncampus'] | usd }}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>Off Campus Housing</p>
+                            <p><b>{{rooms['offcampus'] | usd }}</b></p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="card">
+                            <p>School Population</p>
+                            <p><b>{{demographics['population']| number }}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>Grad Student Size</p>
+                            <p><b>{{demographics['grad_student']| number }}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>Percentage Of Men</p>
+                            <p><b>{{demographics['men'] | percentage }}</b></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="card">
+                            <p>Percentage Of Women</p>
+                            <p><b>{{demographics['women'] | percentage }}</b></p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table><br>
+        
+        <h2>University Programs</h2>
+        <table autofocus class="form-control mx-auto w-auto">
+            <thead>
+                <tr>
+                    <th>Bachelor's Degree</th>
+                    <th>Master's Degreee</th>
+                    <th>Doctoral Degree</th>
+                    <th>Professional Certificate</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="degree-table">
+                        {% for title in degree | selectattr("degree", "equalto", "Bachelor's Degree") | sort(attribute="title", reverse=False) %}
+                            {{ title['title'] }}<br>
+                        {% endfor %}
+                    </td>
+                    <td class="degree-table">
+                        {% for title in degree | selectattr("degree", "equalto", "Master's Degree") | sort(attribute="title", reverse=False) %}
+                            {{ title['title'] }}<br>
+                        {% endfor %}
+                    </td>
+                    <td class="degree-table">
+                        {% for title in degree | selectattr("degree", "equalto", "Doctoral Degree") | sort(attribute="title", reverse=False) %}
+                            {{ title['title'] }}<br>
+                        {% endfor %}
+                    </td>
+                    <td class="degree-table">
+                        {% for title in degree | selectattr("degree", "equalto", "Graduate/Professional Certificate") | sort(attribute="title", reverse=False) %}
+                            {{ title['title'] }}<br>
+                        {% endfor %}
+                    </td>
+                </tr>   
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

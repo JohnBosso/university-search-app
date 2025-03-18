@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Universities By Filter
+{% endblock %}
+
+{% block head %}
+    <style>
+        body {
+            background-image: url('https://media.istockphoto.com/id/539018591/photo/harvard-moors-hall.jpg?s=612x612&w=0&k=20&c=gnKcGqWT2HGi34uPTOMWyr-0oc-Tcpq9-Cg5mHF82f0=');
+            background-size: cover; /* Makes the image cover the entire page */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents repeating */
+            height: 100vh; /* Full height of viewport */
+            margin: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <form action='/filter' method='post'>
+        <div class="container-fluid mb-3">
+            <select name="degree_type" autocomplete="off" autofocus class="form-control mx-auto w-auto">
+                <option value="" selected disabled>Select a Degree</option>
+                <option value="2">Bachelor's Degree</option>
+                <option value="3">Master's Degree</option>
+                <option value="4">Doctoral Degree</option>
+                <option value="1">Graduate/Professional Certificate</option>
+            </select>
+        </div>
+        <div class="container-fluid mb-3">
+            <select name="state" autocomplete="off" autofocus class="form-control mx-auto w-auto">
+                <option value="" selected disabled>Select a State</option>
+                {% for state in us_states %}
+                    <option value="{{state}}" >{{state}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="container-fluid mb-3">
+            <input name="degree_name" type="text" placeholder="Degree Name" autocomplete="off" autofocus class="form-control mx-auto w-auto">
+        </div>
+        <div class="container-fluid mb-3">
+            <input type="submit" autocomplete="off" autofocus class="form-control w-auto mx-auto">
+        </div>
+    </form>
+{% endblock %}

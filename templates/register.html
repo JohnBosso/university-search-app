@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block head %}
+    <style>
+        body {
+            background-image: url('https://media.istockphoto.com/id/539018591/photo/harvard-moors-hall.jpg?s=612x612&w=0&k=20&c=gnKcGqWT2HGi34uPTOMWyr-0oc-Tcpq9-Cg5mHF82f0=');
+            background-size: cover; /* Makes the image cover the entire page */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents repeating */
+            height: 100vh; /* Full height of viewport */
+            margin: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid mb-3">
+        <h3>Register</h3>
+    </div>
+    <form action="/register" method="post">
+        <div class="container-fluid mb-3">
+            <input name="username" type="text" placeholder="Username" autocomplete="off" autofocus class="form-control mx-auto w-auto">
+        </div>
+        <div class="container-fluid mb-3">
+            <input name="mypassword" type="password" placeholder="Password" autocomplete="off" autofocus class="form-control mx-auto w-auto">
+        </div>
+        <div class="container-fluid mb-3">
+            <input name="cpassword" type="password" placeholder="Confirm Password" autocomplete="off" autofocus class="form-control mx-auto w-auto">
+        </div>
+        <div class="container-fluid mb-3">
+            <input name="mails" type="text" placeholder="Mail" autocomplete="off" autofocus class="form-control mx-auto w-auto">
+        </div>
+        <div class="container-fluid mb-3">
+            <input type="submit" placeholder="Mail" autocomplete="off" autofocus class="form-control mx-auto w-auto">
+        </div>
+    </form>
+{% endblock %}

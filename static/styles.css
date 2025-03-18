@@ -1,0 +1,66 @@
+/* Size for brand */
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
+.section {
+    padding-bottom: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 0.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Ensures borders are merged for a clean look */
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+    vertical-align: top;
+    border: 2px solid black; /* Black border around the entire table */
+}
+
+
+th, td {
+    border: 1px solid black;
+    padding: 12px 15px;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+.buttoncolor {
+    background-color: #f4f4f4 !important;
+}
+
+.degree-table {
+    vertical-align: top !important;
+}
+
+.card {
+    width: 250px;
+    background: #f4f4f4 ;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.card h2 {
+    margin: 10px 0;
+    color: #333;
+}
+.card p {
+    color: #666;
+    font-size: 14px;
+}
+.highlight {
+    font-weight: bold;
+    color: #007BFF;
+}
+
+.bg-light-green {
+    background-color: lightgreen !important;
+}
