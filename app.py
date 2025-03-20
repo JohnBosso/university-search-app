@@ -2,8 +2,9 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from flask_mysqldb import MySQL
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 import requests
-import json
 
 from helper import usd, percentage, number
 
@@ -21,11 +22,21 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-app.config['MYSQL_HOST'] = 'localhost' 
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'MonkeyDLuffy8.'
-app.config['MYSQL_DB'] = 'db'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://404839:Kingbosso123.@mysql-university-search.alwaysdata.net:3306/university-search_userlog"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
+
+# Define a sample table
+class University(db.Model):
+    userid = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False)
+    gmail = db.Column(db.String(100), nullable=False)
+    userpassword = db.Column(db.String(1000))
+
+# Create the tables
+with app.app_context():
+    db.create_all()
 
 mysql = MySQL(app)
 
@@ -33,8 +44,6 @@ mysql = MySQL(app)
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        cur = mysql.connection.cursor()
-        
         name = request.form.get('username')
         password = request.form.get('password')
         
@@ -43,31 +52,32 @@ def login():
         if not isinstance(name, str):
             return render_template('error.html', sorry='Name must be a string')
 
-        cur.execute('SELECT * FROM users')
-        namedict = cur.fetchall()
-        length = len(namedict) 
+        users = db.session.execute(text('SELECT * FROM university')).fetchall()
+        length = len(users)
 
         if length < 1:
             return render_template('error.html', sorry='Name is not registered')
 
-        names = [namedict[list]['username'] for list in range(length)]
+        names = [users[list][1] for list in range(length)]
 
         if name not in names:
             return render_template('error.html', sorry='Name is not registered')
         
         if not password:
             return render_template('error.html', sorry='Password field required')
-        
-        cur.execute('SELECT userpassword FROM users WHERE username = %s', (name,))
-        passwords = cur.fetchall()
-        
-        if len(passwords) != 1 or not check_password_hash(passwords[0]['userpassword'], password):
-            return render_template('error.html', sorry='Password is not registered')
-        
-        cur.execute('SELECT userid FROM users WHERE username = %s', (name,))
-        user_id = cur.fetchall()
 
-        session['userid'] = user_id[0]['userid']
+        passwords = db.session.execute(text('SELECT userpassword FROM university WHERE username = :name'), {"name": name}).fetchall()
+        if not passwords:
+            return render_template('error.html', sorry='Name is not registered')
+        
+        passcode = str(passwords[0][0])
+            
+        if len(passwords) != 1 or not check_password_hash(passcode, password):
+            return render_template('error.html', sorry='Password is not registered')
+
+        user_id = db.session.execute(text('SELECT userid FROM university WHERE username = :name'), {"name": name}).fetchall()
+
+        session['userid'] = user_id[0][0]
 
         return redirect('/junction')
 
@@ -77,8 +87,6 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        cur = mysql.connection.cursor()
-
         name = request.form.get('username')
         mypassword = request.form.get('mypassword')
         c_password = request.form.get('cpassword')
@@ -99,11 +107,10 @@ def register():
             if not mails.endswith('@gmail.com'):
                 return render_template('error.html', sorry='Only gmail required')
         
-            hash = generate_password_hash(mypassword, method='scrypt', salt_length=16)
+            hash = generate_password_hash(mypassword)
 
-            cur.execute('INSERT INTO users(username, gmail, userpassword) VALUES (%s, %s, %s)', (name, mails, hash))
-            cur.connection.commit()
-        
+            db.session.execute(text('INSERT INTO university(username, gmail, userpassword) VALUES (:name, :gmail, :userpassword)'), {"name":name, "gmail":mails, "userpassword":hash})
+            db.session.commit()
             return redirect('/')
         
     else:
@@ -112,7 +119,6 @@ def register():
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        cur = mysql.connection.cursor()
         name = request.form.get('sch_name')
         corr_name = name.title()
 
@@ -123,7 +129,7 @@ def home():
         API_KEY = "3daA2AJdE6VmviPSGOUpXOHVjSbCv2vrLbvygGAE"
 
         # API Endpoint for fetching university data
-        url = f"https://api.data.gov/ed/collegescorecard/v1/schools?school.name={name}&_per_page=1&api_key={API_KEY}"
+        url = f"https://api.data.gov/ed/collegescorecard/v1/schools?school.name={corr_name}&_per_page=1&api_key={API_KEY}"
 
         # Make the request
         response = requests.get(url)
@@ -162,10 +168,6 @@ def home():
         
         else:
             return render_template('error.html', sorry='Failed to fetch data')
-
-        
-        cur.execute('SELECT * FROM schools WHERE sch_name LIKE %s', (f"%{corr_name}%",))
-        schools = cur.fetchall()
 
     else:
         return render_template('sch_home.html')
